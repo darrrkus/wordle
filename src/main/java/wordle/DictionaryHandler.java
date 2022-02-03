@@ -3,7 +3,6 @@ package wordle;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,14 +11,14 @@ import java.util.stream.Stream;
 
 public class DictionaryHandler {
     private List<String> dictionary;
-    private Map<String, Long> wordsWeight = new HashMap<>();
+    private final Map<String, Long> wordsWeight;
 
     public DictionaryHandler(String fileName) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(fileName))) {
 
-            List<String> words = new ArrayList<>();
             this.dictionary = lines
                     .map(String::toLowerCase)
+                    .distinct()
                     .filter(word -> word.matches("[a-z]{5}"))
                     .collect(Collectors.toList());
 
@@ -28,15 +27,10 @@ public class DictionaryHandler {
         dictionary = dictionary
                 .stream()
                 .sorted(
-                        (a, b) -> {
-                            return (int) (wordsWeight.get(b) - wordsWeight.get(a));
-                        })
+                        (a, b) -> (int) (wordsWeight.get(b) - wordsWeight.get(a)))
                 .collect(Collectors.toList());
     }
 
-    public List<String> getDictionary() {
-        return this.dictionary;
-    }
 
     public List<String> getWordsByMask(List<Character> disallowedChars,
                                        List<Character> knownChars,
@@ -86,7 +80,7 @@ public class DictionaryHandler {
 
         Map<String, Long> wordsWeightMap = new HashMap<>();
         for (String s : dictionary) {
-            Long wordWeight = Long.valueOf(0);
+            Long wordWeight = 0L;
             for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
                 if (charOccurrenceMap.get(c) != null) {

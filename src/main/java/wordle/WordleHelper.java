@@ -6,7 +6,7 @@ import java.util.*;
 public class WordleHelper {
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  {
 
         List<Character> disallowedChars = new ArrayList<>();
         Map<Integer, Character> positionedChars = new HashMap<>();
@@ -14,7 +14,13 @@ public class WordleHelper {
         Map<Character, List<Integer>> wrongPositions = new HashMap<>();
         String fileName = args.length > 0 ? args[0] : "american.txt";
 
-        DictionaryHandler dictionary = new DictionaryHandler(fileName);
+        DictionaryHandler dictionary;
+        try {
+            dictionary = new DictionaryHandler(fileName);
+        } catch (IOException e) {
+            System.out.printf("Dictionary file %s is missing or corrupted\n", fileName);
+            return;
+        }
 
         for (int i = 1; i <= 6; i++) {
             Scanner scanner = new Scanner(System.in);

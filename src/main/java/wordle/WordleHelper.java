@@ -70,7 +70,6 @@ public class WordleHelper {
             System.out.println("Alternatives:");
             int counter = 0;
             for (String s : validWords) {
-//                System.out.printf("%s\t", s);
                 System.out.printf("%s - %d\t", s, dictionary.getWordWeight(s));
 
                 if (counter++ == 6) {
@@ -79,7 +78,6 @@ public class WordleHelper {
                 }
             }
             System.out.println();
-//            System.out.println(String.join("\n", validWords));
 
         }
 

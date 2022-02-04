@@ -6,7 +6,7 @@ import java.util.*;
 public class WordleHelper {
 
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
         List<Character> disallowedChars = new ArrayList<>();
         Map<Integer, Character> positionedChars = new HashMap<>();
@@ -25,33 +25,41 @@ public class WordleHelper {
         for (int i = 1; i <= 6; i++) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Iteration # " + i);
-            System.out.print("Input word >> ");
-            String word = scanner.next();
-            System.out.print("Input answer (G-green, Y-yellow, g-gray letter)  >> ");
-            String mask = scanner.next();
+            String word;
+            do {
+                System.out.print("Input word >> ");
+                word = scanner.next();
+            } while (!word.matches("[a-z]{5}"));
+            String mask;
+            do {
+                System.out.print("Input answer (G-green, Y-yellow, g-gray letter)  >> ");
+                mask = scanner.next();
+            } while (!mask.matches("[GgY]{5}"));
+
             if ("GGGGG".equals(mask)) {
                 System.out.println("You win. Game is over!");
                 break;
             }
             for (int k = 0; k < 5; k++) {
+                char currentCharInWord = word.charAt(k);
                 switch (mask.charAt(k)) {
                     case ('G'):
-                        positionedChars.putIfAbsent(k, word.charAt(k));
+                        positionedChars.putIfAbsent(k, currentCharInWord);
                         break;
                     case ('Y'):
-                        knownChars.add(word.charAt(k));
-                        if (wrongPositions.get(word.charAt(k)) == null) {
+                        knownChars.add(currentCharInWord);
+                        if (wrongPositions.get(currentCharInWord) == null) {
                             List<Integer> lst = new ArrayList<>();
                             lst.add(k);
-                            wrongPositions.put(word.charAt(k), lst);
+                            wrongPositions.put(currentCharInWord, lst);
                         } else {
-                            List<Integer> lst = wrongPositions.get(word.charAt(k));
+                            List<Integer> lst = wrongPositions.get(currentCharInWord);
                             lst.add(k);
-                            wrongPositions.put(word.charAt(k), lst);
+                            wrongPositions.put(currentCharInWord, lst);
                         }
                         break;
                     case ('g'):
-                        disallowedChars.add(word.charAt(k));
+                        disallowedChars.add(currentCharInWord);
                         break;
                     default:
                         System.out.println("Wrong char at mask position " + k + 1);
@@ -63,7 +71,7 @@ public class WordleHelper {
             int counter = 0;
             for (String s : validWords) {
 //                System.out.printf("%s\t", s);
-                System.out.printf("%s - %d\t",s,dictionary.getWordWeight(s));
+                System.out.printf("%s - %d\t", s, dictionary.getWordWeight(s));
 
                 if (counter++ == 6) {
                     System.out.println();

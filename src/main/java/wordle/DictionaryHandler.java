@@ -1,5 +1,6 @@
 package wordle;
 
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,7 +12,7 @@ import java.util.stream.Stream;
 
 public class DictionaryHandler {
     private List<String> dictionary;
-    private final Map<String, Long> wordsWeight;
+    private final Map<String, Integer> wordsWeight;
 
     public DictionaryHandler(String fileName) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(fileName))) {
@@ -19,7 +20,7 @@ public class DictionaryHandler {
             this.dictionary = lines
                     .map(String::toLowerCase)
                     .distinct()
-                    .filter(word -> word.matches("[a-z]{5}"))
+                    .filter(word -> word.matches("[a-zа-я]{5}"))
                     .collect(Collectors.toList());
 
         }
@@ -27,7 +28,7 @@ public class DictionaryHandler {
         dictionary = dictionary
                 .stream()
                 .sorted(
-                        (a, b) -> (int) (wordsWeight.get(b) - wordsWeight.get(a)))
+                        (a, b) -> (wordsWeight.get(b) - wordsWeight.get(a)))
                 .collect(Collectors.toList());
     }
 
@@ -66,21 +67,23 @@ public class DictionaryHandler {
         return wordsWeight.get(word);
     }
 
-    private Map<String, Long> getWordsWeight(List<String> dictionary) {
-
-        char[] abc = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-                'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
+    private Map<String, Integer> getWordsWeight(List<String> dictionary) {
 
         String allWordsAtString = String.join("", dictionary);
-        Map<Character, Long> charOccurrenceMap = new HashMap<>();
-        for (char c : abc) {
-            Long occurrencesCount = allWordsAtString.chars().filter(ch -> ch == c).count();
-            charOccurrenceMap.put(c, occurrencesCount);
+        Map<Character, Integer> charOccurrenceMap = new HashMap<>();
+        for (int i = 0; i < allWordsAtString.length(); i++) {
+            char c = allWordsAtString.charAt(i);
+            Integer count = charOccurrenceMap.get(c);
+            if (count  == null) charOccurrenceMap.put(c, 1);
+            else {
+                count++;
+                charOccurrenceMap.put(c, count);
+            }
         }
 
-        Map<String, Long> wordsWeightMap = new HashMap<>();
+        Map<String, Integer> wordsWeightMap = new HashMap<>();
         for (String s : dictionary) {
-            Long wordWeight = 0L;
+            Integer wordWeight = 0;
             for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
                 if (charOccurrenceMap.get(c) != null) {

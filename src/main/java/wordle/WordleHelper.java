@@ -29,7 +29,7 @@ public class WordleHelper {
             do {
                 System.out.print("Input word >> ");
                 word = scanner.next();
-            } while (!word.matches("[a-z]{5}"));
+            } while (!word.matches("[a-zа-я]{5}"));
             String mask;
             do {
                 System.out.print("Input answer (G-green, Y-yellow, g-gray letter)  >> ");

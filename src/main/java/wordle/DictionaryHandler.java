@@ -11,12 +11,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DictionaryHandler {
+
     private List<String> dictionary;
     private final Map<String, Integer> wordsWeight;
 
     public DictionaryHandler(String fileName) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(fileName))) {
-
             this.dictionary = lines
                     .map(String::toLowerCase)
                     .distinct()
@@ -33,37 +33,42 @@ public class DictionaryHandler {
     }
 
 
-    public List<String> getWordsByMask(List<Character> disallowedChars,
-                                       List<Character> knownChars,
-                                       Map<Integer, Character> positionedChars,
-                                       Map<Character, List<Integer>> wrongPositions) {
-        return
-                dictionary.
-                        stream()
-                        .filter(word -> {
-                                    for (char c : disallowedChars) {
-                                        if (word.indexOf(c) >= 0) return false;
-                                    }
-                                    for (char c : knownChars) {
-                                        if (word.indexOf(c) < 0) return false;
-                                    }
-                                    for (int i : positionedChars.keySet()) {
-                                        if (word.charAt(i) != positionedChars.get(i)) {
-                                            return false;
-                                        }
-                                    }
-                                    for (Character c : wrongPositions.keySet()) {
-                                        for (int i : wrongPositions.get(c)) {
-                                            if (word.charAt(i) == c) return false;
-                                        }
-                                    }
-                                    return true;
-                                }
-                        )
-                        .collect(Collectors.toList());
+    public List<String> getDictionary() {
+        return dictionary;
     }
 
-    public long getWordWeight(String word){
+
+    public void removeWrongWords(List<Character> disallowedChars,
+                                 List<Character> knownChars,
+                                 Map<Integer, Character> charsPositions,
+                                 Map<Character, List<Integer>> wrongPositions) {
+
+        dictionary = dictionary.
+                stream()
+                .filter(word -> {
+                            for (char c : disallowedChars) {
+                                if (word.indexOf(c) >= 0) return false;
+                            }
+                            for (char c : knownChars) {
+                                if (word.indexOf(c) < 0) return false;
+                            }
+                            for (int i : charsPositions.keySet()) {
+                                if (word.charAt(i) != charsPositions.get(i)) {
+                                    return false;
+                                }
+                            }
+                            for (Character c : wrongPositions.keySet()) {
+                                for (int i : wrongPositions.get(c)) {
+                                    if (word.charAt(i) == c) return false;
+                                }
+                            }
+                            return true;
+                        }
+                )
+                .collect(Collectors.toList());
+    }
+
+    public long getWordWeight(String word) {
         return wordsWeight.get(word);
     }
 
@@ -74,7 +79,7 @@ public class DictionaryHandler {
         for (int i = 0; i < allWordsAtString.length(); i++) {
             char c = allWordsAtString.charAt(i);
             Integer count = charOccurrenceMap.get(c);
-            if (count  == null) charOccurrenceMap.put(c, 1);
+            if (count == null) charOccurrenceMap.put(c, 1);
             else {
                 count++;
                 charOccurrenceMap.put(c, count);
@@ -91,11 +96,7 @@ public class DictionaryHandler {
                 }
                 wordsWeightMap.put(s, wordWeight);
             }
-
         }
-
         return wordsWeightMap;
-
-
     }
 }

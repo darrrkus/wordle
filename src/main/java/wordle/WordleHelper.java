@@ -14,9 +14,9 @@ public class WordleHelper {
         Map<Character, List<Integer>> wrongPositions = new HashMap<>();
         String fileName = args.length > 0 ? args[0] : "american.txt";
 
-        DictionaryHandler dictionary;
+        DictionaryHandler dictionaryHandler;
         try {
-            dictionary = new DictionaryHandler(fileName);
+            dictionaryHandler = new DictionaryHandler(fileName);
         } catch (IOException e) {
             System.out.printf("Dictionary file %s is missing or corrupted\n", fileName);
             return;
@@ -66,11 +66,12 @@ public class WordleHelper {
                         break;
                 }
             }
-            List<String> validWords = dictionary.getWordsByMask(disallowedChars, knownChars, positionedChars, wrongPositions);
+            dictionaryHandler.removeWrongWords(disallowedChars, knownChars, positionedChars, wrongPositions);
+
             System.out.println("Alternatives:");
             int counter = 0;
-            for (String s : validWords) {
-                System.out.printf("%s - %d\t", s, dictionary.getWordWeight(s));
+            for (String s : dictionaryHandler.getDictionary()) {
+                System.out.printf("%s - %d\t", s, dictionaryHandler.getWordWeight(s));
 
                 if (counter++ == 6) {
                     System.out.println();

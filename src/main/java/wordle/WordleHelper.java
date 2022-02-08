@@ -8,10 +8,7 @@ public class WordleHelper {
 
     public static void main(String[] args) {
 
-        List<Character> disallowedChars = new ArrayList<>();
-        Map<Integer, Character> positionedChars = new HashMap<>();
-        List<Character> knownChars = new ArrayList<>();
-        Map<Character, List<Integer>> wrongPositions = new HashMap<>();
+
         String fileName = args.length > 0 ? args[0] : "american.txt";
 
         DictionaryHandler dictionaryHandler;
@@ -23,6 +20,12 @@ public class WordleHelper {
         }
 
         for (int i = 1; i <= 6; i++) {
+
+            List<Character> disallowedChars = new ArrayList<>();
+            Map<Integer, Character> positionedChars = new HashMap<>();
+            List<Character> knownChars = new ArrayList<>();
+            Map<Character, List<Integer>> wrongPositions = new HashMap<>();
+
             Scanner scanner = new Scanner(System.in);
             System.out.println("Iteration # " + i);
             String word;
@@ -67,13 +70,13 @@ public class WordleHelper {
                 }
             }
             dictionaryHandler.removeWrongWords(disallowedChars, knownChars, positionedChars, wrongPositions);
-
-            System.out.println("Alternatives:");
+            System.out.println("\n=============================");
+            System.out.printf("Alternatives (%d words):\n",dictionaryHandler.getDictionary().size());
             int counter = 0;
             for (String s : dictionaryHandler.getDictionary()) {
                 System.out.printf("%s - %d\t", s, dictionaryHandler.getWordWeight(s));
 
-                if (counter++ == 6) {
+                if (counter++ == 5) {
                     System.out.println();
                     counter = 0;
                 }

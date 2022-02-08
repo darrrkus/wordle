@@ -89,9 +89,12 @@ public class DictionaryHandler {
         Map<String, Integer> wordsWeightMap = new HashMap<>();
         for (String s : dictionary) {
             Integer wordWeight = 0;
+            String tempWord = s;
+
             for (int i = 0; i < s.length(); i++) {
                 char c = s.charAt(i);
-                if (charOccurrenceMap.get(c) != null) {
+                if (charOccurrenceMap.get(c) != null & tempWord.substring(0,i).indexOf(c)<0) {
+                    tempWord = s;
                     wordWeight += charOccurrenceMap.get(c);
                 }
                 wordsWeightMap.put(s, wordWeight);

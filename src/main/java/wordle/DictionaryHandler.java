@@ -74,17 +74,7 @@ public class DictionaryHandler {
 
     private Map<String, Integer> getWordsWeight(List<String> dictionary) {
 
-        String allWordsAtString = String.join("", dictionary);
-        Map<Character, Integer> charOccurrenceMap = new HashMap<>();
-        for (int i = 0; i < allWordsAtString.length(); i++) {
-            char c = allWordsAtString.charAt(i);
-            Integer count = charOccurrenceMap.get(c);
-            if (count == null) charOccurrenceMap.put(c, 1);
-            else {
-                count++;
-                charOccurrenceMap.put(c, count);
-            }
-        }
+        Map<Character, Integer> charOccurrenceMap = getCharacterOccurrenceMap(dictionary);
 
         Map<String, Integer> wordsWeightMap = new HashMap<>();
         for (String s : dictionary) {
@@ -101,5 +91,20 @@ public class DictionaryHandler {
             }
         }
         return wordsWeightMap;
+    }
+
+    private Map<Character, Integer> getCharacterOccurrenceMap(List<String> dictionary) {
+        String allWordsAtString = String.join("", dictionary);
+        Map<Character, Integer> charOccurrenceMap = new HashMap<>();
+        for (int i = 0; i < allWordsAtString.length(); i++) {
+            char c = allWordsAtString.charAt(i);
+            Integer count = charOccurrenceMap.get(c);
+            if (count == null) charOccurrenceMap.put(c, 1);
+            else {
+                count++;
+                charOccurrenceMap.put(c, count);
+            }
+        }
+        return charOccurrenceMap;
     }
 }

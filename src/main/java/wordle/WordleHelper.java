@@ -1,17 +1,17 @@
 package wordle;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Scanner;
 
 public class WordleHelper {
 
 
     public static void main(String[] args) {
 
-
         String fileName = args.length > 0 ? args[0] : "american.txt";
-
         DictionaryHandler dictionaryHandler;
+
         try {
             dictionaryHandler = new DictionaryHandler(fileName);
         } catch (IOException e) {
@@ -20,12 +20,6 @@ public class WordleHelper {
         }
 
         for (int i = 1; i <= 6; i++) {
-
-            List<Character> disallowedChars = new ArrayList<>();
-            Map<Integer, Character> positionedChars = new HashMap<>();
-            List<Character> knownChars = new ArrayList<>();
-            Map<Character, List<Integer>> wrongPositions = new HashMap<>();
-
             Scanner scanner = new Scanner(System.in);
             System.out.println("Iteration # " + i);
             String word;
@@ -43,35 +37,13 @@ public class WordleHelper {
                 System.out.println("You win. Game is over!");
                 break;
             }
-            for (int k = 0; k < 5; k++) {
-                char currentCharInWord = word.charAt(k);
-                switch (mask.charAt(k)) {
-                    case ('G'):
-                        positionedChars.putIfAbsent(k, currentCharInWord);
-                        break;
-                    case ('Y'):
-                        knownChars.add(currentCharInWord);
-                        if (wrongPositions.get(currentCharInWord) == null) {
-                            List<Integer> lst = new ArrayList<>();
-                            lst.add(k);
-                            wrongPositions.put(currentCharInWord, lst);
-                        } else {
-                            List<Integer> lst = wrongPositions.get(currentCharInWord);
-                            lst.add(k);
-                            wrongPositions.put(currentCharInWord, lst);
-                        }
-                        break;
-                    case ('g'):
-                        disallowedChars.add(currentCharInWord);
-                        break;
-                    default:
-                        System.out.println("Wrong char at mask position " + k + 1);
-                        break;
-                }
-            }
-            dictionaryHandler.removeWrongWords(disallowedChars, knownChars, positionedChars, wrongPositions);
+
+            List<String> words = dictionaryHandler.removeWrongWords(mask, word);
+            dictionaryHandler.setDictionary(words);
+//            List<String> words2 = dictionaryHandler.removeWrongWordsOld(mask, word);
+
             System.out.println("\n=============================");
-            System.out.printf("Alternatives (%d words):\n",dictionaryHandler.getDictionary().size());
+            System.out.printf("Alternatives (%d words):\n", dictionaryHandler.getDictionary().size());
             int counter = 0;
             for (String s : dictionaryHandler.getDictionary()) {
                 System.out.printf("%s - %d\t", s, dictionaryHandler.getWordWeight(s));

@@ -9,7 +9,7 @@ public class WordleHelper {
 
     public static void main(String[] args) {
 
-        String fileName = args.length > 0 ? args[0] : "american.txt";
+        String fileName = args.length > 0 ? args[0] : "rus_eng_words.txt";
         DictionaryHandler dictionaryHandler;
 
         try {

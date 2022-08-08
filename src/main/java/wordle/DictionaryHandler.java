@@ -3,6 +3,7 @@ package wordle;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,11 +19,19 @@ public class DictionaryHandler {
 
     public DictionaryHandler(String fileName) throws IOException {
         try (Stream<String> lines = Files.lines(Paths.get(fileName))) {
-            this.dictionary = lines.map(String::toLowerCase).distinct().filter(word -> word.matches("[a-zа-я]{5}")).collect(Collectors.toList());
+            this.dictionary =
+                    lines
+                            .map(String::toLowerCase)
+                            .distinct()
+                            .filter(word -> word.matches("[a-zа-я]{5}"))
+                            .collect(Collectors.toList());
 
         }
         wordsWeight = getWordsWeight(this.dictionary);
         dictionary.sort((a, b) -> wordsWeight.get(b) - wordsWeight.get(a));
+
+        Path path = Paths.get("words.txt");
+        Files.write(path, dictionary);
 
     }
 
